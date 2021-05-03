@@ -1,0 +1,26 @@
+version: "3"
+services:
+  goapp:
+    build: .
+    ports:
+      - 8080:8080
+    env_file: .env
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    env_file: .env
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+volumes:
+  api:
+  postgres:
