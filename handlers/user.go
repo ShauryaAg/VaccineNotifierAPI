@@ -150,3 +150,84 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonBytes)
 }
+
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	email := r.Header.Get("decoded")
+
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		fmt.Print("err", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	ct := r.Header.Get("content-type")
+	if ct != "application/json" {
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		w.Write([]byte(fmt.Sprintf("Need content-type: 'application/json', but got %s", ct)))
+		return
+	}
+
+	var user models.User
+	err = json.Unmarshal(bodyBytes, &user)
+	if err != nil {
+		fmt.Print("err", err)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	result := db.DBCon.Model(&models.User{}).Where("email = ?", email).Updates(&user).First(&user) // Updates and stores it in &user
+	if result.Error != nil {
+		fmt.Print("err", result.Error)
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("No Record Found"))
+		return
+	}
+
+	var jsonBytes []byte
+	jsonBytes, err = json.Marshal(user)
+	if err != nil {
+		fmt.Print("err", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonBytes)
+}
+
+func UnsubscribeUser(w http.ResponseWriter, r *http.Request) {
+	email := r.Header.Get("decoded")
+
+	var user models.User
+	db.DBCon.First(&user, "email = ?", email)
+	if !user.IsActive {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Please confirm your Email!"))
+		return
+	}
+
+	user.IsSubscribed = false
+	result := db.DBCon.Save(&user)
+	if result.Error != nil {
+		fmt.Println("err", result.Error)
+		return
+	}
+
+	jsonBytes, err := json.Marshal(user)
+	if err != nil {
+		fmt.Print("err", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonBytes)
+}

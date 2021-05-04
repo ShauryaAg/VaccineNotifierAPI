@@ -6,6 +6,6 @@ import (
 	"cov-api/utils"
 )
 
-func Get(w http.ResponseWriter, r *http.Request) {
-	utils.SendVaccineInfo()
+func SendNotification(w http.ResponseWriter, r *http.Request) {
+	utils.SendVaccineInfo(r.Host)
 }

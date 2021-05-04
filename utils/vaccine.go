@@ -52,7 +52,7 @@ func GetAvailableSessions(user models.User, centers map[string]interface{}) []in
 	return AvailableSessions
 }
 
-func SendVaccineInfo() {
+func SendVaccineInfo(host string) {
 	var distinctPincode []string
 	result := db.DBCon.Model(&models.User{}).Distinct("pincode").Find(&distinctPincode)
 	if result.Error != nil {
@@ -67,7 +67,7 @@ func SendVaccineInfo() {
 		for _, user := range users {
 			if user.IsActive && user.IsSubscribed {
 				AvailableSessions := GetAvailableSessions(user, centers)
-				SendNotificationEmail(user, AvailableSessions)
+				SendNotificationEmail(user, host, AvailableSessions)
 			}
 		}
 	}

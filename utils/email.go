@@ -27,14 +27,21 @@ func SendConfirmationEmail(user models.User, host string) {
 	SendSendgridEmail(data)
 }
 
-func SendNotificationEmail(user models.User, AvailableSessions []interface{}) {
+func SendNotificationEmail(user models.User, host string, AvailableSessions []interface{}) {
 	var data = make(map[string]string)
+
+	var token = models.NewUserToken(user)
+
+	db.DBCon.Create(token) // Create and save a new token
 
 	var plaincontent string
 	for _, session := range AvailableSessions {
 		sessionMap := session.(map[string]interface{})
 		plaincontent += fmt.Sprintf("%s available at %s, %s, %s on %s for people above %d years of age\n\n", sessionMap["vaccine"], sessionMap["center"], sessionMap["district"], sessionMap["state"], sessionMap["date"], int(sessionMap["min_age_limit"].(float64)))
 	}
+
+	url := fmt.Sprintf("%s://%s/u/%s", "http", host, token.Token)
+	plaincontent += fmt.Sprintf("\n Unsubscribe from further emails using this link: %s", url)
 
 	data["text-content"] = plaincontent
 	data["html-content"] = ""
