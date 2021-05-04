@@ -6,12 +6,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type preferredVaccine int
+type preferredVaccine string
 
 const (
-	ANY         preferredVaccine = iota // 0
-	COVAXIN                             // 1
-	COVIDSHIELD                         // 2
+	ANY         preferredVaccine = "ANY"
+	COVAXIN     preferredVaccine = "COVAXIN"
+	COVIDSHIELD preferredVaccine = "COVIDSHIELD"
 )
 
 type User struct {
@@ -21,8 +21,8 @@ type User struct {
 	Age              int
 	Password         string
 	Pincode          string
-	IsSubscribed     bool
-	PreferredVaccine preferredVaccine
+	IsSubscribed     bool             `sql:"DEFAULT:true"`
+	PreferredVaccine preferredVaccine `sql:"DEFAULT:'ANY'"`
 }
 
 func (a *User) HashPassword() {
