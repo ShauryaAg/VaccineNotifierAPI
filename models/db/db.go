@@ -39,6 +39,5 @@ func CreateDatabase() (*gorm.DB, error) {
 
 func migrateDatabase(db *gorm.DB) {
 	// TODO: Create migrations for models
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Token{})
+	db.AutoMigrate(&models.User{}, &models.Token{})
 }

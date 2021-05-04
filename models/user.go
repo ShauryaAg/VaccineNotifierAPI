@@ -20,10 +20,10 @@ type User struct {
 	Password         string
 	Age              int
 	Pincode          string           `gorm:"index"`
-	Email            string           `gorm:"check:unique"`
-	IsActive         bool             `gorm:"default:false"`
-	IsSubscribed     bool             `gorm:"default:true"`
-	PreferredVaccine preferredVaccine `gorm:"default:'ANY'"`
+	Email            string           `gorm:"index:idx_users_email,unique"`
+	IsActive         bool             `sql:"DEFAULT:false"`
+	IsSubscribed     bool             `sql:"DEFAULT:true"`
+	PreferredVaccine preferredVaccine `sql:"DEFAULT:'ANY'"`
 }
 
 func (a *User) HashPassword() {

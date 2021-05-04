@@ -42,7 +42,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	user.Id = uuid.New().String()
 	user.IsSubscribed = true
 	user.HashPassword()
-	db.DBCon.Create(&user)
+	result := db.DBCon.Create(&user)
+	if result.Error != nil {
+		fmt.Print("err", result.Error)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Email already in use"))
+		return
+	}
 
 	jsonBytes, err := json.Marshal(user)
 	if err != nil {
