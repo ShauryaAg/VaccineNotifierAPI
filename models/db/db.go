@@ -25,7 +25,6 @@ var (
 )
 
 // Initialises Database
-// @returns
 func CreateDatabase() (*gorm.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 	fmt.Println(psqlInfo)
@@ -41,4 +40,5 @@ func CreateDatabase() (*gorm.DB, error) {
 func migrateDatabase(db *gorm.DB) {
 	// TODO: Create migrations for models
 	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&models.Token{})
 }

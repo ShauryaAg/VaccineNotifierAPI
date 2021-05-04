@@ -16,13 +16,14 @@ const (
 
 type User struct {
 	Id               string
-	Email            string
 	Name             string
-	Age              int
 	Password         string
-	Pincode          string
-	IsSubscribed     bool             `sql:"DEFAULT:true"`
-	PreferredVaccine preferredVaccine `sql:"DEFAULT:'ANY'"`
+	Age              int
+	Pincode          string           `gorm:"index"`
+	Email            string           `gorm:"check:unique"`
+	IsActive         bool             `gorm:"default:false"`
+	IsSubscribed     bool             `gorm:"default:true"`
+	PreferredVaccine preferredVaccine `gorm:"default:'ANY'"`
 }
 
 func (a *User) HashPassword() {

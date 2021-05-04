@@ -52,6 +52,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	utils.SendConfirmationEmail(user, r.Host) // Sending Confirmation Email
+
 	w.Header().Add("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonBytes)
@@ -85,6 +87,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	var user models.User
 	db.DBCon.First(&user, "email = ?", data["email"])
+	if !user.IsActive {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Please confirm your Email!"))
+		return
+	}
 
 	valid := user.VerifyPassword(data["password"])
 	var token string
@@ -119,6 +126,11 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	var user models.User
 	db.DBCon.First(&user, "email = ?", email)
+	if !user.IsActive {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Please confirm your Email!"))
+		return
+	}
 
 	jsonBytes, err := json.Marshal(user)
 	if err != nil {

@@ -13,13 +13,13 @@ var (
 	SENDGRID_API_KEY = os.Getenv("SENDGRID_API_KEY")
 )
 
-func SendEmail() {
-	from := mail.NewEmail("Example User", "test@example.com")
-	subject := "Confirm Your Email!"
-	to := mail.NewEmail("Example User", "test@example.com")
-	plainTextContent := "and easy to do anywhere, even with Go"
-	htmlContent := "<strong>and easy to do anywhere, even with Go</strong>"
-	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
+func SendSendgridEmail(data map[string]string) {
+	subject := data["subject"]
+	TextContent := data["text-content"]
+	HtmlContent := data["html-content"]
+	to := mail.NewEmail(data["to-name"], data["to-email"])
+	from := mail.NewEmail(data["from-name"], data["from-email"])
+	message := mail.NewSingleEmail(from, subject, to, TextContent, HtmlContent)
 
 	client := sendgrid.NewSendClient(SENDGRID_API_KEY)
 

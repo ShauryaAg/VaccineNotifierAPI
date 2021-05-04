@@ -22,6 +22,7 @@ func main() {
 	r.HandleFunc("/register", handlers.Register).Methods("POST") // POST /register
 
 	r.HandleFunc("/", handlers.Get).Methods("GET")
+	r.HandleFunc("/t/{token}", handlers.VerifyToken).Methods("GET")
 
 	r.Handle("/user", middlewares.AuthMiddleware(
 		http.HandlerFunc(handlers.GetUser),
