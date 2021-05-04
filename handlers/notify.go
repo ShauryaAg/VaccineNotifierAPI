@@ -25,7 +25,10 @@ func Get(w http.ResponseWriter, r *http.Request) {
 		db.DBCon.Find(&users, "pincode = ?", pincode)
 		centers := utils.GetVaccineDetailsByPincodeAndDate(pincode, time.Now())
 		for _, user := range users {
-			utils.GetAvailableSessions(user, centers)
+			if user.IsActive && user.IsSubscribed {
+				AvailableSessions := utils.GetAvailableSessions(user, centers)
+				utils.SendNotificationEmail(user, AvailableSessions)
+			}
 		}
 	}
 

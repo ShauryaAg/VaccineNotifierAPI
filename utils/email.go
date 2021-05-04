@@ -26,3 +26,23 @@ func SendConfirmationEmail(user models.User, host string) {
 
 	SendSendgridEmail(data)
 }
+
+func SendNotificationEmail(user models.User, AvailableSessions []interface{}) {
+	var data = make(map[string]string)
+
+	var plaincontent string
+	for _, session := range AvailableSessions {
+		sessionMap := session.(map[string]interface{})
+		plaincontent += fmt.Sprintf("%s available at %s, %s, %s on %s for people above %s years of age\n\n", sessionMap["vaccine"], sessionMap["center"], sessionMap["district"], sessionMap["state"], sessionMap["date"], sessionMap["min_age_limit"])
+	}
+
+	data["text-content"] = plaincontent
+	data["html-content"] = ""
+	data["to-name"] = user.Name
+	data["to-email"] = user.Email
+	data["from-name"] = "VaccineNotifier"
+	data["from-email"] = "agora.dscbvp@gmail.com"
+	data["subject"] = "Confirm Your Email!"
+
+	SendSendgridEmail(data)
+}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 	"time"
 
 	"cov-api/models"
@@ -32,12 +33,17 @@ func GetAvailableSessions(user models.User, centers map[string]interface{}) []in
 
 	var AvailableSessions []interface{}
 
-	for _, center := range centers["centers"].(map[string]interface{}) {
+	for _, center := range centers["centers"].([]interface{}) {
 		centerMap := center.(map[string]interface{})
 		for _, session := range centerMap["sessions"].([]interface{}) {
 			sessionMap := session.(map[string]interface{})
-			if int(sessionMap["min_age_limit"].(float64)) < user.Age && (sessionMap["vaccine"] == user.PreferredVaccine || sessionMap["vaccine"] == "ANY") {
-				AvailableSessions = append(AvailableSessions, session)
+
+			sessionMap["center"] = centerMap["address"]
+			sessionMap["district"] = centerMap["district_name"]
+			sessionMap["state"] = centerMap["state_name"]
+
+			if int(sessionMap["min_age_limit"].(float64)) < user.Age && (strings.Compare(sessionMap["vaccine"].(string), string(user.PreferredVaccine)) == 0 || strings.Compare(sessionMap["vaccine"].(string), "ANY") == 0) {
+				AvailableSessions = append(AvailableSessions, sessionMap)
 			}
 		}
 	}
