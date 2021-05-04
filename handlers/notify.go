@@ -1,4 +1,3 @@
-// https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=110054&date=06-05-2021
 package handlers
 
 import (
@@ -24,9 +23,9 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
 	for _, pincode := range distinctPincode {
 		db.DBCon.Find(&users, "pincode = ?", pincode)
-		sessions := utils.GetVaccineDetailsByPincodeAndDate(pincode, time.Now())
+		centers := utils.GetVaccineDetailsByPincodeAndDate(pincode, time.Now())
 		for _, user := range users {
-			utils.GetAvailableSessions(user, sessions)
+			utils.GetAvailableSessions(user, centers)
 		}
 	}
 
