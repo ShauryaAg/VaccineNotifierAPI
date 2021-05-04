@@ -33,7 +33,7 @@ func SendNotificationEmail(user models.User, AvailableSessions []interface{}) {
 	var plaincontent string
 	for _, session := range AvailableSessions {
 		sessionMap := session.(map[string]interface{})
-		plaincontent += fmt.Sprintf("%s available at %s, %s, %s on %s for people above %s years of age\n\n", sessionMap["vaccine"], sessionMap["center"], sessionMap["district"], sessionMap["state"], sessionMap["date"], sessionMap["min_age_limit"])
+		plaincontent += fmt.Sprintf("%s available at %s, %s, %s on %s for people above %d years of age\n\n", sessionMap["vaccine"], sessionMap["center"], sessionMap["district"], sessionMap["state"], sessionMap["date"], int(sessionMap["min_age_limit"].(float64)))
 	}
 
 	data["text-content"] = plaincontent
@@ -42,7 +42,7 @@ func SendNotificationEmail(user models.User, AvailableSessions []interface{}) {
 	data["to-email"] = user.Email
 	data["from-name"] = "VaccineNotifier"
 	data["from-email"] = "agora.dscbvp@gmail.com"
-	data["subject"] = "Confirm Your Email!"
+	data["subject"] = "Your Vaccine is Available!"
 
 	SendSendgridEmail(data)
 }

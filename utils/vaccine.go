@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"cov-api/models"
+	"cov-api/models/db"
 )
 
 func GetVaccineDetailsByPincodeAndDate(pincode string, date time.Time) map[string]interface{} {
@@ -49,4 +50,25 @@ func GetAvailableSessions(user models.User, centers map[string]interface{}) []in
 	}
 
 	return AvailableSessions
+}
+
+func SendVaccineInfo() {
+	var distinctPincode []string
+	result := db.DBCon.Model(&models.User{}).Distinct("pincode").Find(&distinctPincode)
+	if result.Error != nil {
+		fmt.Print("err", result.Error)
+		return
+	}
+
+	var users []models.User
+	for _, pincode := range distinctPincode {
+		db.DBCon.Find(&users, "pincode = ?", pincode)
+		centers := GetVaccineDetailsByPincodeAndDate(pincode, time.Now())
+		for _, user := range users {
+			if user.IsActive && user.IsSubscribed {
+				AvailableSessions := GetAvailableSessions(user, centers)
+				SendNotificationEmail(user, AvailableSessions)
+			}
+		}
+	}
 }

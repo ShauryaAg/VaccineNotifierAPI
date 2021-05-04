@@ -8,11 +8,14 @@ import (
 	"cov-api/handlers"
 	"cov-api/middlewares"
 	"cov-api/models/db"
+	"cov-api/utils"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
+	utils.AddCronJobs()
+
 	db.DBCon, _ = db.CreateDatabase() // initialising the database
 
 	r := mux.NewRouter().StrictSlash(true)
