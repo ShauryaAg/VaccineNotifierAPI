@@ -18,12 +18,12 @@ func AuthMiddleware(next http.Handler) http.Handler {
 		} else {
 			jwtToken := authHeader[1]
 			decoded, err := utils.ParseToken(jwtToken)
-			r.Header.Set("decoded", (*decoded)["email"].(string))
 			if err != nil || decoded == nil {
 				fmt.Println(err)
 				w.WriteHeader(http.StatusUnauthorized)
 				w.Write([]byte("Unauthorized"))
 			} else {
+				r.Header.Set("decoded", (*decoded)["email"].(string))
 				next.ServeHTTP(w, r)
 			}
 		}

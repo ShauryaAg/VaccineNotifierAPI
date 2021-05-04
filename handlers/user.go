@@ -49,6 +49,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("err", err)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
+		return
 	}
 
 	w.Header().Add("content-type", "application/json")
@@ -91,6 +92,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		token, err = utils.CreateToken(user)
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 	}
 
@@ -103,6 +105,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("err", err)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
+		return
 	}
 
 	w.Header().Add("content-type", "application/json")
@@ -118,11 +121,11 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	db.DBCon.First(&user, "email = ?", email)
 
 	jsonBytes, err := json.Marshal(user)
-
 	if err != nil {
 		fmt.Println("err", err)
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
+		return
 	}
 
 	w.Header().Add("content-type", "application/json")

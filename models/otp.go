@@ -6,10 +6,10 @@ import (
 )
 
 type Otp struct {
-	SessionId string
-	Token     string
+	Email string
+	Token string
 }
 
-func GenrateOtp() string {
-	return fmt.Sprintf("%06d", rand.Intn(1000000))
+func (otp *Otp) GenerateToken() {
+	otp.Token = fmt.Sprintf("%010d", rand.Intn(10000000000))
 }
