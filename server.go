@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"cov-api/handlers"
@@ -13,8 +14,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const (
-	CURRENT_HOST = "localhost:8080"
+var (
+	CURRENT_HOST = os.Getenv("CURRENT_HOST")
 )
 
 func main() {
@@ -44,7 +45,7 @@ func main() {
 	)).Methods("POST") // POST /unsubscribe Auth: Bearer <Token>
 
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":" + os.Getenv("PORT"),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
