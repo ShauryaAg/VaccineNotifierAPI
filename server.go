@@ -31,7 +31,7 @@ func main() {
 	r.HandleFunc("/t/{token}", handlers.VerifyToken).Methods("GET")      // GET /t/<token>; For Email verification
 	r.HandleFunc("/u/{token}", handlers.UnsubscribeToken).Methods("GET") // GET /t/<token>; For Email verification
 
-	r.HandleFunc("/", handlers.SendNotification).Methods("GET")
+	r.HandleFunc("/notifyall", handlers.SendNotification).Methods("GET")
 
 	// Auth routes
 	r.Handle("/user", middlewares.AuthMiddleware(

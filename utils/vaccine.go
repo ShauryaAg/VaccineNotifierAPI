@@ -67,7 +67,9 @@ func SendVaccineInfo(host string) {
 		for _, user := range users {
 			if user.IsActive && user.IsSubscribed {
 				AvailableSessions := GetAvailableSessions(user, centers)
-				SendNotificationEmail(user, host, AvailableSessions)
+				if AvailableSessions != nil {
+					SendNotificationEmail(user, host, AvailableSessions)
+				}
 			}
 		}
 	}
