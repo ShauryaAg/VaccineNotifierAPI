@@ -6,12 +6,10 @@ import (
 	"os"
 	"time"
 
-	"cov-api/handlers"
-	"cov-api/middlewares"
 	"cov-api/models/db"
+	"cov-api/routes"
 	"cov-api/utils"
 
-	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )
 
@@ -24,7 +22,7 @@ func main() {
 
 	db.DBCon, _ = db.CreateDatabase() // initialising the database
 
-	r := mux.NewRouter().StrictSlash(true)
+	r := routes.GetRoutes()
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -33,28 +31,6 @@ func main() {
 		AllowCredentials: true,
 		Debug:            true,
 	})
-
-	r.HandleFunc("/t/{token}", handlers.VerifyToken).Methods("GET")      // GET /t/<token>; For Email verification
-	r.HandleFunc("/u/{token}", handlers.UnsubscribeToken).Methods("GET") // GET /t/<token>; For Email verification
-
-	// Prefix
-	api := r.PathPrefix("/api").Subrouter()
-
-	// API Routes
-	api.HandleFunc("/login", handlers.Login).Methods("POST")       // POST /login
-	api.HandleFunc("/register", handlers.Register).Methods("POST") // POST /register
-	api.HandleFunc("/notifyall", handlers.SendNotification).Methods("GET")
-
-	// Auth routes
-	api.Handle("/user", middlewares.AuthMiddleware(
-		http.HandlerFunc(handlers.GetUser),
-	)).Methods("GET") // GET /user Auth: Bearer <Token>
-	api.Handle("/user", middlewares.AuthMiddleware(
-		http.HandlerFunc(handlers.UpdateUser),
-	)).Methods("PATCH") // GET /user Auth: Bearer <Token>
-	api.Handle("/unsubscribe", middlewares.AuthMiddleware(
-		http.HandlerFunc(handlers.UnsubscribeUser),
-	)).Methods("POST") // POST /unsubscribe Auth: Bearer <Token>
 
 	srv := &http.Server{
 		Addr:         ":" + os.Getenv("PORT"),
