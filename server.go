@@ -12,6 +12,7 @@ import (
 	"cov-api/utils"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 var (
@@ -25,22 +26,33 @@ func main() {
 
 	r := mux.NewRouter().StrictSlash(true)
 
-	// API Routes
-	r.HandleFunc("/login", handlers.Login).Methods("POST")               // POST /login
-	r.HandleFunc("/register", handlers.Register).Methods("POST")         // POST /register
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"POST", "GET", "OPTIONS", "PUT"},
+		AllowedHeaders:   []string{"Access-Control-Allow-Origin", "Accept", "Accept-Language", "Content-Type"},
+		AllowCredentials: true,
+		Debug:            true,
+	})
+
 	r.HandleFunc("/t/{token}", handlers.VerifyToken).Methods("GET")      // GET /t/<token>; For Email verification
 	r.HandleFunc("/u/{token}", handlers.UnsubscribeToken).Methods("GET") // GET /t/<token>; For Email verification
 
-	r.HandleFunc("/notifyall", handlers.SendNotification).Methods("GET")
+	// Prefix
+	api := r.PathPrefix("/api").Subrouter()
+
+	// API Routes
+	api.HandleFunc("/login", handlers.Login).Methods("POST")       // POST /login
+	api.HandleFunc("/register", handlers.Register).Methods("POST") // POST /register
+	api.HandleFunc("/notifyall", handlers.SendNotification).Methods("GET")
 
 	// Auth routes
-	r.Handle("/user", middlewares.AuthMiddleware(
+	api.Handle("/user", middlewares.AuthMiddleware(
 		http.HandlerFunc(handlers.GetUser),
 	)).Methods("GET") // GET /user Auth: Bearer <Token>
-	r.Handle("/user", middlewares.AuthMiddleware(
+	api.Handle("/user", middlewares.AuthMiddleware(
 		http.HandlerFunc(handlers.UpdateUser),
 	)).Methods("PATCH") // GET /user Auth: Bearer <Token>
-	r.Handle("/unsubscribe", middlewares.AuthMiddleware(
+	api.Handle("/unsubscribe", middlewares.AuthMiddleware(
 		http.HandlerFunc(handlers.UnsubscribeUser),
 	)).Methods("POST") // POST /unsubscribe Auth: Bearer <Token>
 
@@ -49,7 +61,7 @@ func main() {
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
-		Handler:      r,
+		Handler:      c.Handler(r),
 	}
 
 	log.Fatal(srv.ListenAndServe())

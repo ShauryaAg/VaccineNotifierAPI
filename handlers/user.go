@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"cov-api/models"
 	"cov-api/models/db"
@@ -24,7 +25,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ct := r.Header.Get("content-type")
-	if ct != "application/json" {
+	if strings.Contains(ct, "application/json") {
 		w.WriteHeader(http.StatusUnsupportedMediaType)
 		w.Write([]byte(fmt.Sprintf("Need content-type: 'application/json', but got %s", ct)))
 		return
@@ -76,7 +77,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ct := r.Header.Get("content-type")
-	if ct != "application/json" {
+	if strings.Contains(ct, "application/json") {
 		w.WriteHeader(http.StatusUnsupportedMediaType)
 		w.Write([]byte(fmt.Sprintf("Need content-type: 'application/json', but got %s", ct)))
 		return
@@ -164,7 +165,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ct := r.Header.Get("content-type")
-	if ct != "application/json" {
+	if strings.Contains(ct, "application/json") {
 		w.WriteHeader(http.StatusUnsupportedMediaType)
 		w.Write([]byte(fmt.Sprintf("Need content-type: 'application/json', but got %s", ct)))
 		return
