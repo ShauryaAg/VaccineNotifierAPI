@@ -51,19 +51,16 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jsonBytes, err := json.Marshal(user)
+	err = utils.SendConfirmationEmail(user, r.Host) // Sending Confirmation Email
 	if err != nil {
-		fmt.Println("err", err)
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
 
-	utils.SendConfirmationEmail(user, r.Host) // Sending Confirmation Email
-
 	w.Header().Add("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonBytes)
+	w.Write([]byte("Please confirm your Email"))
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {

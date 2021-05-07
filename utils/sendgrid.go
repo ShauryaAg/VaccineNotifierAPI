@@ -13,7 +13,7 @@ var (
 	SENDGRID_API_KEY = os.Getenv("SENDGRID_API_KEY")
 )
 
-func SendSendgridEmail(data map[string]string) {
+func SendSendgridEmail(data map[string]string) error {
 	subject := data["subject"]
 	TextContent := data["text-content"]
 	HtmlContent := data["html-content"]
@@ -26,9 +26,11 @@ func SendSendgridEmail(data map[string]string) {
 	response, err := client.Send(message)
 	if err != nil {
 		log.Println(err)
+		return err
 	} else {
 		fmt.Println(response.StatusCode)
 		fmt.Println(response.Body)
 		fmt.Println(response.Headers)
+		return nil
 	}
 }

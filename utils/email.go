@@ -7,7 +7,7 @@ import (
 	"cov-api/models/db"
 )
 
-func SendConfirmationEmail(user models.User, host string) {
+func SendConfirmationEmail(user models.User, host string) error {
 	var data = make(map[string]string)
 	var token = models.NewUserToken(user)
 
@@ -24,10 +24,10 @@ func SendConfirmationEmail(user models.User, host string) {
 	data["from-email"] = "agora.dscbvp@gmail.com"
 	data["subject"] = "Confirm Your Email!"
 
-	SendSendgridEmail(data)
+	return SendSendgridEmail(data)
 }
 
-func SendNotificationEmail(user models.User, host string, AvailableSessions []interface{}) {
+func SendNotificationEmail(user models.User, host string, AvailableSessions []interface{}) error {
 	var data = make(map[string]string)
 
 	var token = models.NewUserToken(user)
@@ -51,5 +51,5 @@ func SendNotificationEmail(user models.User, host string, AvailableSessions []in
 	data["from-email"] = "agora.dscbvp@gmail.com"
 	data["subject"] = "Your Vaccine is Available!"
 
-	SendSendgridEmail(data)
+	return SendSendgridEmail(data)
 }
