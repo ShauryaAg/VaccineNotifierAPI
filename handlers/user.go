@@ -93,8 +93,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
-	db.DBCon.First(&user, "email = ?", data["email"])
-	if !user.IsActive {
+	result := db.DBCon.First(&user, "email = ?", data["email"])
+	if result.Error != nil {
+		fmt.Print("err", result.Error)
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(result.Error.Error()))
+		return
+	} else if !user.IsActive {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Please confirm your Email!"))
 		return
@@ -108,6 +113,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			return
 		}
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Email/Password is incorrect"))
+		return
 	}
 
 	jsonBytes, err := json.Marshal(struct {
