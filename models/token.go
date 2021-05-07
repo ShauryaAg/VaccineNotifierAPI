@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/hex"
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -19,8 +18,6 @@ func NewUserToken(user User) *Token {
 	token.UserID = user.Id
 	token.GenerateToken()
 
-	fmt.Println(token.Token)
-
 	return &token
 }
 
@@ -30,6 +27,5 @@ func (token *Token) GenerateToken() {
 	if _, err := rand.Read(b); err != nil {
 		return
 	}
-	fmt.Println(b)
 	token.Token = hex.EncodeToString(b)
 }
