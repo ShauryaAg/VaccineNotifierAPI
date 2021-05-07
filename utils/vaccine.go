@@ -43,7 +43,7 @@ func GetAvailableSessions(user models.User, centers map[string]interface{}) []in
 			sessionMap["district"] = centerMap["district_name"]
 			sessionMap["state"] = centerMap["state_name"]
 
-			if int(sessionMap["min_age_limit"].(float64)) < user.Age && (strings.Compare(sessionMap["vaccine"].(string), string(user.PreferredVaccine)) == 0 || strings.Compare(sessionMap["vaccine"].(string), "ANY") == 0) {
+			if int(sessionMap["min_age_limit"].(float64)) <= user.Age && (strings.Compare(sessionMap["vaccine"].(string), string(user.PreferredVaccine)) == 0 || strings.Compare(sessionMap["vaccine"].(string), "ANY") == 0) {
 				AvailableSessions = append(AvailableSessions, sessionMap)
 			}
 		}
