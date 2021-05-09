@@ -15,7 +15,9 @@ func VerifyToken(w http.ResponseWriter, r *http.Request) {
 	var token models.Token
 	var user models.User
 
-	db.DBCon.First(&token, "token = ?", vars["token"])
+	db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
+
+	fmt.Println(token)
 
 	db.DBCon.First(&user, "id = ?", token.UserID)
 	user.IsActive = true
@@ -31,7 +33,7 @@ func UnsubscribeToken(w http.ResponseWriter, r *http.Request) {
 	var token models.Token
 	var user models.User
 
-	db.DBCon.First(&token, "token = ?", vars["token"])
+	db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
 
 	db.DBCon.First(&user, "id = ?", token.UserID)
 	user.IsSubscribed = false
@@ -40,4 +42,6 @@ func UnsubscribeToken(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("err", result.Error)
 		return
 	}
+
+	db.DBCon.Model(&token).Delete(&token)
 }
