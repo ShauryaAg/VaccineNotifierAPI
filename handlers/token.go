@@ -16,8 +16,8 @@ func VerifyToken(w http.ResponseWriter, r *http.Request) {
 	var token models.Token
 	var user models.User
 
-	db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
-	if token.Type != "CONFIRM" || time.Now().After(token.Expiry) {
+	result := db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
+	if result.Error != nil || token.Type != "CONFIRM" || time.Now().After(token.Expiry) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Invalid URL"))
 		return
@@ -25,7 +25,7 @@ func VerifyToken(w http.ResponseWriter, r *http.Request) {
 
 	db.DBCon.First(&user, "id = ?", token.UserID)
 	user.IsActive = true
-	result := db.DBCon.Save(&user)
+	result = db.DBCon.Save(&user)
 	if result.Error != nil {
 		fmt.Println("err", result.Error)
 		return
@@ -37,8 +37,8 @@ func UnsubscribeToken(w http.ResponseWriter, r *http.Request) {
 	var token models.Token
 	var user models.User
 
-	db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
-	if token.Type != "UNSUBSCRIBE" || time.Now().After(token.Expiry) {
+	result := db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
+	if result.Error != nil || token.Type != "UNSUBSCRIBE" || time.Now().After(token.Expiry) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Invalid URL"))
 		return
@@ -46,7 +46,7 @@ func UnsubscribeToken(w http.ResponseWriter, r *http.Request) {
 
 	db.DBCon.First(&user, "id = ?", token.UserID)
 	user.IsSubscribed = false
-	result := db.DBCon.Save(&user)
+	result = db.DBCon.Save(&user)
 	if result.Error != nil {
 		fmt.Println("err", result.Error)
 		return

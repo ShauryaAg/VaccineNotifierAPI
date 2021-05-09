@@ -16,8 +16,8 @@ func ResetPasswordView(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	var token models.Token
 
-	db.DBCon.First(&token, "token = ?", vars["token"])
-	if token.Type != "FORGOT" || time.Now().After(token.Expiry) {
+	result := db.DBCon.First(&token, "token = ?", vars["token"])
+	if result.Error != nil || token.Type != "FORGOT" || time.Now().After(token.Expiry) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Invalid URL"))
 		return
@@ -55,8 +55,8 @@ func ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm() // parsing application/x-www-form-urlencoded
 
-	db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
-	if token.Type != "FORGOT" || time.Now().After(token.Expiry) {
+	result := db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
+	if result.Error != nil || token.Type != "FORGOT" || time.Now().After(token.Expiry) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Invalid URL"))
 		return
@@ -64,7 +64,7 @@ func ResetPassword(w http.ResponseWriter, r *http.Request) {
 
 	db.DBCon.First(&user, "id = ?", token.UserID)
 	user.SetPassword(r.Form["password"][0])
-	result := db.DBCon.Save(&user)
+	result = db.DBCon.Save(&user)
 	if result.Error != nil {
 		fmt.Println("err", result.Error)
 		return
