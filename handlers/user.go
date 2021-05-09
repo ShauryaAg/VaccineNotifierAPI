@@ -207,6 +207,9 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if user.Password != "" {
+		user.HashPassword()
+	}
 	result := db.DBCon.Model(&models.User{}).Where("email = ?", email).Updates(&user).First(&user) // Updates and stores it in &user
 	if result.Error != nil {
 		fmt.Print("err", result.Error)

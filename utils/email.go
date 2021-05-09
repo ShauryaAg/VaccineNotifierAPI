@@ -62,7 +62,7 @@ func SendPasswordResetEmail(user models.User, host string) error {
 	db.DBCon.Create(token) // Create and save a new token
 
 	url := fmt.Sprintf("%s://%s/f/%s", "http", host, token.Token)
-	plaincontent := fmt.Sprintf("Reset your password using this link : %s", url)
+	plaincontent := fmt.Sprintf("Reset your password using this link : %s\n\n Valid only for 30 Minutes", url)
 
 	data["text-content"] = plaincontent
 	data["html-content"] = ""

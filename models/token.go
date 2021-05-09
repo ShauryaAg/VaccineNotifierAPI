@@ -17,8 +17,9 @@ const (
 type Token struct {
 	Token  string
 	Type   tokenType
-	User   User `gorm:"constraint:OnDelete:CASCADE;"`
+	Expiry time.Time
 	UserID string
+	User   User `gorm:"constraint:OnDelete:CASCADE;"`
 }
 
 func NewUserToken(user User, tokenType tokenType) *Token {
@@ -26,6 +27,11 @@ func NewUserToken(user User, tokenType tokenType) *Token {
 
 	token.UserID = user.Id
 	token.Type = tokenType
+	if tokenType == "FORGOT" {
+		token.Expiry = time.Now().Add(30 * time.Minute) // valid for 30 minutes only
+	} else {
+		token.Expiry = time.Now().AddDate(10, 0, 0) // Valid for 10 years from now
+	}
 	token.GenerateToken()
 
 	return &token
