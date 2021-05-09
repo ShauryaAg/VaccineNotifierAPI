@@ -1,4 +1,7 @@
-# Vaccine Notifier API
+<p align="center">
+    <img alt="VaccineNotifier" src="https://user-images.githubusercontent.com/31778302/117589685-be18f380-b148-11eb-9153-6f2aa1df4fe6.png" width="100" />
+</p>
+<h1 align="center"> Vaccine Notifier API </h1>
 
 This API allows users to subscribe to notification emails, if any vaccine slot is empty within their pincode.
 
