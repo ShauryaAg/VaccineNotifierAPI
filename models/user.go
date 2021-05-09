@@ -9,9 +9,9 @@ import (
 type preferredVaccine string
 
 const (
-	ANY         preferredVaccine = "ANY"
-	COVAXIN     preferredVaccine = "COVAXIN"
-	COVIDSHIELD preferredVaccine = "COVIDSHIELD"
+	ANY        preferredVaccine = "ANY"
+	COVAXIN    preferredVaccine = "COVAXIN"
+	COVISHIELD preferredVaccine = "COVISHIELD"
 )
 
 type User struct {
