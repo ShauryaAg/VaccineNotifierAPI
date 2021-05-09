@@ -24,6 +24,10 @@ func main() {
 
 	r := routes.GetRoutes()
 
+	// Serving Static files
+	fs := http.FileServer(http.Dir("./static"))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", fs))
+
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"POST", "GET", "OPTIONS", "PUT"},

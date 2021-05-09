@@ -14,14 +14,15 @@ func GetUserRoutes(r *mux.Router) {
 	api := r.PathPrefix("/auth").Subrouter()
 
 	// API Routes
-	api.HandleFunc("/login", handlers.Login).Methods("POST")       // POST /login
-	api.HandleFunc("/register", handlers.Register).Methods("POST") // POST /register
+	api.HandleFunc("/login", handlers.Login).Methods("POST")                      // POST /api/auth/login
+	api.HandleFunc("/register", handlers.Register).Methods("POST")                // POST /api/auth/register
+	api.HandleFunc("/reset_password", handlers.ResetUserPassword).Methods("POST") // POST /api/auth/reset_password
 
 	// Auth routes
 	api.Handle("/user", middlewares.AuthMiddleware(
 		http.HandlerFunc(handlers.GetUser),
-	)).Methods("GET") // GET /user Auth: Bearer <Token>
+	)).Methods("GET") // GET /api/auth/user Auth: Bearer <Token>
 	api.Handle("/user", middlewares.AuthMiddleware(
 		http.HandlerFunc(handlers.UpdateUser),
-	)).Methods("PATCH") // GET /user Auth: Bearer <Token>
+	)).Methods("PATCH") // PATCH /api/auth/user Auth: Bearer <Token>
 }

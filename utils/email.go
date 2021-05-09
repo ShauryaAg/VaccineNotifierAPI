@@ -9,7 +9,7 @@ import (
 
 func SendConfirmationEmail(user models.User, host string) error {
 	var data = make(map[string]string)
-	var token = models.NewUserToken(user)
+	var token = models.NewUserToken(user, "CONFIRM")
 
 	db.DBCon.Create(token) // Create and save a new token
 
@@ -30,7 +30,7 @@ func SendConfirmationEmail(user models.User, host string) error {
 func SendNotificationEmail(user models.User, host string, AvailableSessions []interface{}) error {
 	var data = make(map[string]string)
 
-	var token = models.NewUserToken(user)
+	var token = models.NewUserToken(user, "UNSUBSCRIBE")
 
 	db.DBCon.Create(token) // Create and save a new token
 
@@ -50,6 +50,27 @@ func SendNotificationEmail(user models.User, host string, AvailableSessions []in
 	data["from-name"] = "VaccineNotifier"
 	data["from-email"] = "agora.dscbvp@gmail.com"
 	data["subject"] = "Your Vaccine is Available!"
+
+	return SendSendgridEmail(data)
+}
+
+func SendPasswordResetEmail(user models.User, host string) error {
+	var data = make(map[string]string)
+
+	var token = models.NewUserToken(user, "FORGOT")
+
+	db.DBCon.Create(token) // Create and save a new token
+
+	url := fmt.Sprintf("%s://%s/f/%s", "http", host, token.Token)
+	plaincontent := fmt.Sprintf("Reset your password using this link : %s", url)
+
+	data["text-content"] = plaincontent
+	data["html-content"] = ""
+	data["to-name"] = user.Name
+	data["to-email"] = user.Email
+	data["from-name"] = "VaccineNotifier"
+	data["from-email"] = "agora.dscbvp@gmail.com"
+	data["subject"] = "Reset Your Password!"
 
 	return SendSendgridEmail(data)
 }

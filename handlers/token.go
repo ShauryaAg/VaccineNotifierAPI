@@ -16,8 +16,11 @@ func VerifyToken(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 
 	db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
-
-	fmt.Println(token)
+	if token.Type != "CONFIRM" {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("Invalid URL"))
+		return
+	}
 
 	db.DBCon.First(&user, "id = ?", token.UserID)
 	user.IsActive = true
@@ -34,6 +37,11 @@ func UnsubscribeToken(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 
 	db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
+	if token.Type != "UNSUBSCRIBE" {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("Invalid URL"))
+		return
+	}
 
 	db.DBCon.First(&user, "id = ?", token.UserID)
 	user.IsSubscribed = false
@@ -42,6 +50,27 @@ func UnsubscribeToken(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("err", result.Error)
 		return
 	}
+}
 
-	db.DBCon.Model(&token).Delete(&token)
+func ForgotPasswordToken(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	var token models.Token
+	var user models.User
+
+	r.ParseForm() // parsing application/x-www-form-urlencoded
+
+	db.DBCon.First(&token, "token = ?", vars["token"]).Delete(&models.Token{}) // delete token after finding
+	if token.Type != "FORGOT" {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("Invalid URL"))
+		return
+	}
+
+	db.DBCon.First(&user, "id = ?", token.UserID)
+	user.SetPassword(r.Form["password"][0])
+	result := db.DBCon.Save(&user)
+	if result.Error != nil {
+		fmt.Println("err", result.Error)
+		return
+	}
 }

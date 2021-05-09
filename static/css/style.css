@@ -1,0 +1,12 @@
+@font-face {
+  font-family: "Product Sans";
+  src: url("../fonts/ProductSans-Regular.ttf");
+}
+
+* {
+  font-family: "Product Sans";
+}
+
+.header {
+  margin-top: 0.5em;
+}

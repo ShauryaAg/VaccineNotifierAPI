@@ -238,3 +238,45 @@ func UnsubscribeUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonBytes)
 }
+
+func ResetUserPassword(w http.ResponseWriter, r *http.Request) {
+	bodyBytes, err := ioutil.ReadAll(r.Body)
+	defer r.Body.Close()
+	if err != nil {
+		fmt.Print("err", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	ct := r.Header.Get("content-type")
+	if !strings.Contains(ct, "application/json") {
+		w.WriteHeader(http.StatusUnsupportedMediaType)
+		w.Write([]byte(fmt.Sprintf("Need content-type: 'application/json', but got %s", ct)))
+		return
+	}
+
+	var data map[string]string
+	err = json.Unmarshal(bodyBytes, &data)
+	if err != nil {
+		fmt.Print("err", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	var user models.User
+	result := db.DBCon.First(&user, "email = ?", data["email"])
+	if result.Error != nil || !user.IsActive {
+		fmt.Print("err", result.Error)
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte("Invalid Email"))
+		return
+	}
+
+	utils.SendPasswordResetEmail(user, r.Host) // send reset email
+
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Password Reset Email has been sent"))
+}
