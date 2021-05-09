@@ -45,12 +45,33 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	user.HashPassword()
 	result := db.DBCon.Create(&user)
 	if result.Error != nil {
-		fmt.Print("err", result.Error)
+		if strings.Contains(
+			result.Error.Error(),
+			"ERROR: duplicate key value violates unique constraint",
+		) {
+			user.Id = "" // a bit of a hack to make userId nil for searching
+			result := db.DBCon.First(&user, "email = ?", user.Email)
+			if result.Error != nil {
+				fmt.Println("err", result.Error)
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte("Internal Server Error"))
+				return
+			}
+			if !user.IsActive {
+				goto sendMail // Send mail again even if user exists
+			} else {
+				w.WriteHeader(http.StatusBadRequest)
+				w.Write([]byte("Email already in use"))
+				return
+			}
+		}
+		fmt.Println("err", result.Error)
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Email already in use"))
+		w.Write([]byte(result.Error.Error()))
 		return
 	}
 
+sendMail:
 	err = utils.SendConfirmationEmail(user, r.Host) // Sending Confirmation Email
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
