@@ -156,10 +156,10 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 // Get user details using JWT
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	email := r.Header.Get("decoded")
+	id := r.Header.Get("decoded")
 
 	var user models.User
-	db.DBCon.First(&user, "email = ?", email)
+	db.DBCon.First(&user, "id = ?", id)
 	if !user.IsActive {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Please confirm your Email!"))
@@ -180,7 +180,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	email := r.Header.Get("decoded")
+	id := r.Header.Get("decoded")
 
 	bodyBytes, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
@@ -210,7 +210,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if user.Password != "" {
 		user.HashPassword()
 	}
-	result := db.DBCon.Model(&models.User{}).Where("email = ?", email).Updates(user).First(&user) // Updates and stores it in &user
+	result := db.DBCon.Model(&models.User{}).Where("id = ?", id).Updates(&user).First(&user) // Updates and stores it in &user
 	if result.Error != nil {
 		fmt.Print("err", result.Error)
 		w.WriteHeader(http.StatusNotFound)
@@ -233,10 +233,10 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UnsubscribeUser(w http.ResponseWriter, r *http.Request) {
-	email := r.Header.Get("decoded")
+	id := r.Header.Get("decoded")
 
 	var user models.User
-	db.DBCon.First(&user, "email = ?", email)
+	db.DBCon.First(&user, "id = ?", id)
 	if !user.IsActive {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Please confirm your Email!"))

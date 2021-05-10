@@ -23,7 +23,7 @@ func AuthMiddleware(next http.Handler) http.Handler {
 				w.WriteHeader(http.StatusUnauthorized)
 				w.Write([]byte("Unauthorized"))
 			} else {
-				r.Header.Set("decoded", (*decoded)["email"].(string))
+				r.Header.Set("decoded", (*decoded)["userId"].(string))
 				next.ServeHTTP(w, r)
 			}
 		}
