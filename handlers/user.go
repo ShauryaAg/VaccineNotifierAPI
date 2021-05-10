@@ -198,8 +198,8 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user models.User
-	err = json.Unmarshal(bodyBytes, &user)
+	var data map[string]interface{}
+	err = json.Unmarshal(bodyBytes, &data)
 	if err != nil {
 		fmt.Print("err", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -207,10 +207,25 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.Password != "" {
-		user.HashPassword()
+	var user models.User
+	// woo bad hack
+	if data["Password"] != nil || data["password"] != nil {
+		var password string
+		if data["Password"] != nil {
+			password = data["Password"].(string)
+		} else {
+			password = data["password"].(string)
+		}
+
+		user.SetPassword(password)
+
+		if data["Password"] != nil {
+			data["Password"] = user.Password
+		} else {
+			data["password"] = user.Password
+		}
 	}
-	result := db.DBCon.Model(&models.User{}).Where("email = ?", email).Updates(&user).First(&user) // Updates and stores it in &user
+	result := db.DBCon.Model(&models.User{}).Where("email = ?", email).Updates(data).First(&user) // Updates and stores it in &user
 	if result.Error != nil {
 		fmt.Print("err", result.Error)
 		w.WriteHeader(http.StatusNotFound)

@@ -26,14 +26,15 @@ type User struct {
 	PreferredVaccine preferredVaccine `sql:"DEFAULT:'ANY'"`
 }
 
-func (u *User) HashPassword() {
+func (u *User) HashPassword() error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return err
 	}
 
 	u.Password = string(hash)
+	return nil
 }
 
 func (u *User) VerifyPassword(attempt string) bool {
@@ -46,9 +47,7 @@ func (u *User) VerifyPassword(attempt string) bool {
 	return true
 }
 
-func (u *User) SetPassword(new string) bool {
+func (u *User) SetPassword(new string) {
 	u.Password = new
 	u.HashPassword()
-
-	return true
 }
