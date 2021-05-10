@@ -210,6 +210,18 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if user.Password != "" {
 		user.HashPassword()
 	}
+
+	// hack to only set IsSubscribed false
+	if !user.IsSubscribed {
+		result := db.DBCon.Model(&models.User{}).Where("id = ?", id).Update("IsSubscribed", user.IsSubscribed)
+		if result.Error != nil {
+			fmt.Print("err", result.Error)
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("No Record Found"))
+			return
+		}
+	}
+
 	result := db.DBCon.Model(&models.User{}).Where("id = ?", id).Updates(&user).First(&user) // Updates and stores it in &user
 	if result.Error != nil {
 		fmt.Print("err", result.Error)
