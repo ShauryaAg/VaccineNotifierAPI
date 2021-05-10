@@ -25,4 +25,8 @@ func GetUserRoutes(r *mux.Router) {
 	api.Handle("/user", middlewares.AuthMiddleware(
 		http.HandlerFunc(handlers.UpdateUser),
 	)).Methods("PATCH") // PATCH /api/auth/user Auth: Bearer <Token>
+	api.Handle("/unsub", middlewares.AuthMiddleware(
+		http.HandlerFunc(handlers.UnsubscribeUser),
+	)).Methods("POST") // POST /api/auth/unsub Auth: Bearer <Token>
+
 }

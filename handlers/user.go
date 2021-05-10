@@ -198,8 +198,8 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var data map[string]interface{}
-	err = json.Unmarshal(bodyBytes, &data)
+	var user models.User
+	err = json.Unmarshal(bodyBytes, &user)
 	if err != nil {
 		fmt.Print("err", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -207,25 +207,10 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user models.User
-	// woo bad hack
-	if data["Password"] != nil || data["password"] != nil {
-		var password string
-		if data["Password"] != nil {
-			password = data["Password"].(string)
-		} else {
-			password = data["password"].(string)
-		}
-
-		user.SetPassword(password)
-
-		if data["Password"] != nil {
-			data["Password"] = user.Password
-		} else {
-			data["password"] = user.Password
-		}
+	if user.Password != "" {
+		user.HashPassword()
 	}
-	result := db.DBCon.Model(&models.User{}).Where("email = ?", email).Updates(data).First(&user) // Updates and stores it in &user
+	result := db.DBCon.Model(&models.User{}).Where("email = ?", email).Updates(user).First(&user) // Updates and stores it in &user
 	if result.Error != nil {
 		fmt.Print("err", result.Error)
 		w.WriteHeader(http.StatusNotFound)
@@ -262,20 +247,14 @@ func UnsubscribeUser(w http.ResponseWriter, r *http.Request) {
 	result := db.DBCon.Save(&user)
 	if result.Error != nil {
 		fmt.Println("err", result.Error)
-		return
-	}
-
-	jsonBytes, err := json.Marshal(user)
-	if err != nil {
-		fmt.Print("err", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		w.Write([]byte("Internal Server Error"))
 		return
 	}
 
 	w.Header().Add("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write(jsonBytes)
+	w.Write([]byte("User has been Unsubscribed"))
 }
 
 func ResetUserPassword(w http.ResponseWriter, r *http.Request) {
