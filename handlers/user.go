@@ -208,6 +208,10 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user models.User
+	if userMap["password"] != nil {
+		userMap["Password"] = userMap["password"]
+		delete(userMap, "password")
+	}
 	if userMap["Password"] != nil {
 		user.SetPassword(userMap["Password"].(string))
 		userMap["Password"] = user.Password
