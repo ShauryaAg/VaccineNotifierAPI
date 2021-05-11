@@ -12,7 +12,7 @@ func GetRoutes() *mux.Router {
 
 	// with prefix 'api'
 	GetUserRoutes(api)
-	GetTokenRoutes(api)
+	GetNotifyRoutes(api)
 
 	return r
 }
