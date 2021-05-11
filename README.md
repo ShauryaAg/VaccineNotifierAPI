@@ -29,9 +29,13 @@ SECRET=<Secret>
 SENDGRID_API_KEY=<Your Key>
 ```
 
+##### Using Docker <a href="https://www.docker.com/"> <img alt="VaccineNotifier" src="https://www.docker.com/sites/default/files/d8/styles/role_icon/public/2019-07/vertical-logo-monochromatic.png" width="50" /> </a>
+
 - Run using `sudo docker-compose up`
 
-  **OR**
+### **OR**
+
+##### Using Golang <a href="https://golang.org/"> <img alt="VaccineNotifier" src="https://golang.org/lib/godoc/images/go-logo-blue.svg" width="50" /> </a>
 
 - Install the dependecies using `go mod download`
 - Run using `go run server.go`
