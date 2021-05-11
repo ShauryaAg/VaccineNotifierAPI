@@ -14,7 +14,13 @@ import (
 
 func GetVaccineDetailsByPincodeAndDate(pincode string, date time.Time) map[string]interface{} {
 	url := fmt.Sprintf("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=%s&date=%s", pincode, date.Format("02-01-2006"))
-	response, err := http.Get(url)
+
+	client := &http.Client{}
+	request, _ := http.NewRequest("GET", url, nil)
+	request.Header.Set("Host", "cdn-api.co-vin.in") // Need these headers to make the request
+	request.Header.Set("User-Agent", "PostmanRuntime/7.28.0")
+
+	response, err := client.Do(request)
 	if err != nil {
 		fmt.Println("err", err)
 		return nil
