@@ -30,19 +30,21 @@ SENDGRID_API_KEY=<Your Key>
 ```
 
 - Run using `sudo docker-compose up`
-  or
+
+  **OR**
+
 - Install the dependecies using `go mod download`
 - Run using `go run server.go`
 
 ### Deployment
 
-- > This can't be deployed on heroku since **Cowin public API** doesn't allow from anywhere outside Indias (at least from my experience), and **Heroku** doesn't allow us to choose Indian region.
+- > This can't be deployed on **Heroku** since **Cowin public API** doesn't allow requests from anywhere outside India (at least from my experience) and **Heroku** doesn't allow us to choose Indian region.
 - > Deploy on AWS / Digital Ocean / GCP / Any other cloud service
 - > It is currently deployed on AWS
 
 ## Endpoint Usage
 
-##### Auth
+#### Auth
 
 - `/api/auth/register`
 
@@ -61,15 +63,22 @@ SENDGRID_API_KEY=<Your Key>
 - `/api/auth/user`
 
   - _Allowed Methods:_ `GET` `PATCH`
-    `GET`
 
-    - _Authorization:_ `Bearer <Token>`
-    - _Returns:_ `User details after update`
+    - `GET`
 
-    `PATCH`
+      - _Authorization:_ `Bearer <Token>`
+      - _Returns:_ `User details after update`
 
-    - _Accepted Fields:_ `User details to be updated`
-    - _Returns:_ `User details after update`
+    - `PATCH`
+
+      - _Accepted Fields:_ `User details to be updated`
+      - _Returns:_ `User details after update`
+
+- `api/auth/unsub`
+
+  - _Allowed Methods:_ `POST`
+  - _Authorization:_ `Bearer <Token>`
+  - Unsubscribe user from getting notification mails
 
 - `api/auth/reset_password`
 
@@ -77,15 +86,15 @@ SENDGRID_API_KEY=<Your Key>
   - _Accepted Fields:_ `{email}`
   - Sends a password reset email to the user
 
-##### Notification
+#### Notification
 
 - `api/notifyall`
 
   - _Allowed Methods:_ `GET`
   - Sends a notification email to all the registered users
-    > This endpoint was created for testing purposes
+    > This endpoint was created for testing purposes and doesn't work in production
 
-##### Token
+#### Token
 
 - `/t/<token>`
 
