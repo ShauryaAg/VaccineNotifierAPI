@@ -198,8 +198,8 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user models.User
-	err = json.Unmarshal(bodyBytes, &user)
+	var userMap map[string]interface{}
+	err = json.Unmarshal(bodyBytes, &userMap)
 	if err != nil {
 		fmt.Print("err", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -207,22 +207,13 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if user.Password != "" {
-		user.HashPassword()
+	var user models.User
+	if userMap["Password"] != nil {
+		user.SetPassword(userMap["Password"].(string))
+		userMap["Password"] = user.Password
 	}
 
-	// hack to only set IsSubscribed false
-	if !user.IsSubscribed {
-		result := db.DBCon.Model(&models.User{}).Where("id = ?", id).Update("IsSubscribed", user.IsSubscribed)
-		if result.Error != nil {
-			fmt.Print("err", result.Error)
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("No Record Found"))
-			return
-		}
-	}
-
-	result := db.DBCon.Model(&models.User{}).Where("id = ?", id).Updates(&user).First(&user) // Updates and stores it in &user
+	result := db.DBCon.Model(&models.User{}).Where("id = ?", id).Updates(userMap).First(&user) // Updates and stores it in &user
 	if result.Error != nil {
 		fmt.Print("err", result.Error)
 		w.WriteHeader(http.StatusNotFound)
