@@ -17,14 +17,21 @@ func GetVaccineDetailsByPincodeAndDate(pincode string, date time.Time) map[strin
 	response, err := http.Get(url)
 	if err != nil {
 		fmt.Println("err", err)
+		return nil
 	}
-	bytes, _ := ioutil.ReadAll(response.Body)
+
+	bytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("err", err)
+		return nil
+	}
 	defer response.Body.Close()
 
 	var centers map[string]interface{}
 	err = json.Unmarshal(bytes, &centers)
 	if err != nil {
 		fmt.Println("err", err)
+		return nil
 	}
 
 	return centers
@@ -64,11 +71,13 @@ func SendVaccineInfo(host string) {
 	for _, pincode := range distinctPincode {
 		db.DBCon.Find(&users, "pincode = ?", pincode)
 		centers := GetVaccineDetailsByPincodeAndDate(pincode, time.Now())
-		for _, user := range users {
-			if user.IsActive && user.IsSubscribed {
-				AvailableSessions := GetAvailableSessions(user, centers)
-				if AvailableSessions != nil {
-					SendNotificationEmail(user, host, AvailableSessions)
+		if centers != nil {
+			for _, user := range users {
+				if user.IsActive && user.IsSubscribed {
+					AvailableSessions := GetAvailableSessions(user, centers)
+					if AvailableSessions != nil {
+						SendNotificationEmail(user, host, AvailableSessions)
+					}
 				}
 			}
 		}
