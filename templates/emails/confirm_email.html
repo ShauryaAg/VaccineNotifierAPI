@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- Add to calendar script -->
+    <!-- <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script> -->
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .header {
+            width: 100%;
+            text-align: center;
+            background: #1573dd;
+        }
+
+        .table-header {
+            /* border: solid rgba(131, 129, 129, 0.2); */
+            border-radius: 16px;
+            margin: auto;
+            margin-top: 10px;
+            border-collapse: unset;
+        }
+
+        .header-text {
+            display: block;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 5vh;
+            text-align: center;
+        }
+
+        .center {
+            text-align: center;
+            display: block;
+            width: 50vw;
+            margin-top: 3vh;
+            margin-left: auto;
+            margin-right: auto;
+            /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); */
+            border-radius: 16px;
+        }
+
+        .message-td {
+            text-align: center;
+        }
+
+        .message {
+            display: block;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 2vh;
+            font-weight: 500;
+            padding-top: 3vh;
+            margin: 0 auto;
+            line-height: 1.5;
+            max-width: 80%;
+        }
+
+        .image {
+            display: block;
+            margin: auto;
+            width: 50%;
+        }
+
+        .btn-link {
+            display: block;
+            color: #000000;
+            text-decoration: none;
+            outline: none;
+        }
+
+        .btn-link:hover {
+            text-decoration: none;
+        }
+
+        .email-btn {
+            display: block;
+            background: #e4e4e4;
+            width: 20vw;
+            height: 6vh;
+            font-family: 'Open Sans', sans-serif;
+            color: #000000;
+            border: none;
+            border-radius: 4vw;
+            outline: none;
+            margin-left: auto;
+            margin-right: auto;
+
+        }
+
+        .email-btn:focus {
+            outline: none;
+            cursor: pointer;
+        }
+
+        .bottom-text {
+            display: block;
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.5vh;
+            padding-bottom: 5px;
+        }
+
+        .bottom-image {
+            display: block;
+            width: 30vw;
+            padding: 2vh;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        p {
+            margin-top: 10px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 600px) {
+            .header {
+                height: 30vh;
+            }
+
+            .center {
+                width: 90vw;
+            }
+
+            .header-logo-image {
+                height: 10vh;
+            }
+
+            .message {
+                font-size: 2vh;
+                max-width: 80%;
+            }
+
+            .email-btn {
+                border-radius: 10vw;
+                width: 50vw;
+                font-size: 1.7vh;
+            }
+
+            .bottom-text {
+                padding-bottom: 2px;
+            }
+
+            .bottom-image {
+                width: 50vw;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="header">
+        <span class="header-text"><b>Vaccine Notifier</b></span>
+    </div>
+    <table class="table-header">
+        <tbody>
+
+            <p class="message">
+                Hi <strong>{{.Name}}</strong>,
+            </p>
+            <p class="message">
+                Please confirm your mail by clicking at the button below
+            </p>
+            <p class="message">
+                If the button doesn't work for some reason, paste the following link in your browser: {{.Url}}
+            </p>
+            <br />
+            <br />
+
+            <tr>
+                <td>
+                    <a class="btn-link" href="{{.Url}}">
+                        <button class="email-btn">
+                            Confirm Your Email
+                        </button>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!-- Add to calendar script -->
+    <!-- <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script> -->
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .header {
+            width: 100%;
+            text-align: center;
+            background: #1573dd;
+        }
+
+        .table-header {
+            /* border: solid rgba(131, 129, 129, 0.2); */
+            border-radius: 16px;
+            margin: auto;
+            margin-top: 10px;
+            border-collapse: unset;
+        }
+
+        .header-text {
+            display: block;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 5vh;
+            text-align: center;
+        }
+
+        .center {
+            text-align: center;
+            display: block;
+            width: 50vw;
+            margin-top: 3vh;
+            margin-left: auto;
+            margin-right: auto;
+            /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); */
+            border-radius: 16px;
+        }
+
+        .message-td {
+            text-align: center;
+        }
+
+        .message {
+            display: block;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 2vh;
+            font-weight: 500;
+            padding-top: 3vh;
+            margin: 0 auto;
+            line-height: 1.5;
+            max-width: 80%;
+        }
+
+        .unsub-link {
+            text-align: center;
+        }
+
+        p {
+            margin-top: 10px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .header {
+                height: 30vh;
+            }
+
+            .center {
+                width: 90vw;
+            }
+
+            .header-logo-image {
+                height: 10vh;
+            }
+
+            .message {
+                font-size: 2vh;
+                max-width: 80%;
+            }
+
+            .email-btn {
+                border-radius: 10vw;
+                width: 50vw;
+                font-size: 1.7vh;
+            }
+
+            .bottom-text {
+                padding-bottom: 2px;
+            }
+
+            .bottom-image {
+                width: 50vw;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="header">
+        <span class="header-text"><b>Vaccine Notifier</b></span>
+    </div>
+    <table class="table-header">
+        <tbody>
+            {{ range $key, $session := .Sessions }}
+            <div>
+                <p class="message">
+                    {{ $session.vaccine }} available at {{ $session.district }},
+                    {{ $session.state }}, on {{ $session.date }} for people above {{ $session.min_age_limit }} years of
+                    age
+                </p>
+            </div>
+            {{ end }}
+        </tbody>
+    </table>
+    <p class="message">
+        <a class="unsub-link center" href="{{.Url}}">Unsubscribe</a>
+    </p>
+</body>
+
+</html>

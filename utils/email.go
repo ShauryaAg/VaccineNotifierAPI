@@ -17,7 +17,12 @@ func SendConfirmationEmail(user models.User, host string) error {
 	plaincontent := fmt.Sprintf("Confirm your email by clicking on this link : %s", url)
 
 	data["text-content"] = plaincontent
-	data["html-content"] = ""
+
+	data["html-content"] = ParseTemplate("templates/emails/confirm_email.html", struct {
+		Name string
+		Url  string
+	}{user.Name, url})
+
 	data["to-name"] = user.Name
 	data["to-email"] = user.Email
 	data["from-name"] = "VaccineNotifier"
@@ -44,7 +49,12 @@ func SendNotificationEmail(user models.User, host string, AvailableSessions []in
 	plaincontent += fmt.Sprintf("\n Unsubscribe from further emails using this link: %s", url)
 
 	data["text-content"] = plaincontent
-	data["html-content"] = ""
+
+	data["html-content"] = ParseTemplate("templates/emails/notification.html", struct {
+		Sessions []interface{}
+		Url      string
+	}{AvailableSessions, url})
+
 	data["to-name"] = user.Name
 	data["to-email"] = user.Email
 	data["from-name"] = "VaccineNotifier"
@@ -65,7 +75,12 @@ func SendPasswordResetEmail(user models.User, host string) error {
 	plaincontent := fmt.Sprintf("Reset your password using this link : %s\n\n Valid only for 30 Minutes", url)
 
 	data["text-content"] = plaincontent
-	data["html-content"] = ""
+
+	data["html-content"] = ParseTemplate("templates/emails/reset_password.html", struct {
+		Name string
+		Url  string
+	}{user.Name, url})
+
 	data["to-name"] = user.Name
 	data["to-email"] = user.Email
 	data["from-name"] = "VaccineNotifier"
