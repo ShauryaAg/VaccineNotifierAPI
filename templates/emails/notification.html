@@ -23,7 +23,12 @@
         .header {
             width: 100%;
             text-align: center;
-            background: #1573dd;
+            border-bottom: 1px solid;
+        }
+
+        .helper {
+            display: inline-block;
+            height: 7vh;
         }
 
         .table-header {
@@ -113,6 +118,10 @@
 
 <body>
     <div class="header">
+        <span class="helper"></span>
+        <img class="header-logo-image"
+            src="https://user-images.githubusercontent.com/31778302/118365915-36097280-b5bc-11eb-871a-4b9ab9d13f05.png"
+            alt="VaccineNotifier" width="50px">
         <span class="header-text"><b>Vaccine Notifier</b></span>
     </div>
     <table class="table-header">
@@ -120,7 +129,7 @@
             {{ range $key, $session := .Sessions }}
             <div>
                 <p class="message">
-                    {{ $session.vaccine }} available at {{ $session.district }},
+                    {{ $session.vaccine }} available at {{ $session.center }}, {{ $session.district }},
                     {{ $session.state }}, on {{ $session.date }} for people above {{ $session.min_age_limit }} years of
                     age
                 </p>
