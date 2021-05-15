@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="VaccineNotifier" src="https://user-images.githubusercontent.com/31778302/117589685-be18f380-b148-11eb-9153-6f2aa1df4fe6.png" width="100" />
+    <img alt="VaccineNotifier" src="https://user-images.githubusercontent.com/31778302/118365915-36097280-b5bc-11eb-871a-4b9ab9d13f05.png" width="100" />
 </p>
 <h1 align="center"> Vaccine Notifier API </h1>
 
