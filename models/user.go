@@ -11,6 +11,7 @@ type preferredVaccine string
 const (
 	ANY        preferredVaccine = "ANY"
 	COVAXIN    preferredVaccine = "COVAXIN"
+	SPUTNIKV   preferredVaccine = "SPUTNIKV"
 	COVISHIELD preferredVaccine = "COVISHIELD"
 )
 
